@@ -1,14 +1,21 @@
 const { Router } = require('express');
 const router = Router();
 
-const vagasMock = [
-    {id: 1, título: 'Dev FrontEnd React', empresa: 'TechSimulada', tipo: 'remoto'},
-    {id: 2, título: 'Dev Python', empresa: 'TechLead', tipo: 'presencial'},
-    {id: 3, título: 'Dev Java', empresa: 'Sankhya', tipo: 'hibrido'}
-];
+const db = require('../database/db');
 
 router.get('/', (req, res) => {
-    res.json(vagasMock);
+    try {
+        const vagas = db.prepare(`
+            SELECT v.*, e.nome AS empresa_nome
+            FROM vagas v
+            JOIN empresas e ON v.empresa_id = e.id
+            ORDER BY v.created_at DESC
+        `).all();
+        res.json(vagas);
+    } catch (error) {
+        console.error('Erro ao buscar vagas:', error);
+        res.status(500).json({ error: 'Erro interno ao buscar vagas' });
+    }
 });
 
 module.exports = router;

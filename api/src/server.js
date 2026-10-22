@@ -1,8 +1,8 @@
 const express = require('express');
-const {timestamp} = require('node:console');
 const cors = require('cors');
+require('./database/db');
 
-const vagasRoutes = require('./routes/vagas.routes')
+const vagasRoutes = require('./routes/vagas.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -11,15 +11,15 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
-    res.json({
-        staus: 'ok',
-        projeto: 'DevJobs API',
-        timestamp: new Date().toISOString()
-    });
+  res.json({
+    status: 'ok',
+    projeto: 'DevJobs API',
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.use('/api/vagas', vagasRoutes);
 
 app.listen(PORT, () => {
-    console.log(`DevJobs API rodando em http://localhost:${PORT}`);
+  console.log(`DevJobs API rodando em http://localhost:${PORT}`);
 });
